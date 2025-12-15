@@ -38,8 +38,8 @@ WAITING_FOR_NEW_LINK = 5
 def get_menu_keyboard():
     keyboard = [
         [KeyboardButton("🛒 Закинуть в корзину")],
-        [KeyboardButton("📋 Мои товары"), KeyboardButton("✏️ Изменить ссылку")],
-        [KeyboardButton("❌ Удалить товар")],
+        [KeyboardButton("📋 Мои ссылки"), KeyboardButton("✏️ Изменить ссылку")],
+        [KeyboardButton("❌ Удалить ссылку")],
     ]
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
@@ -140,7 +140,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 Заказы принимаются до 19.12 12:00, после чего все будет заказано и отправлено.
 
-Товары можно удалять если передумала.
+Ссылки можно удалять если передумала.
 
 Управлять всем этим чудом можно через 'Меню' (выбери снизу) или напиши и отправь /menu"""
     
@@ -217,11 +217,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         )
         return ConversationHandler.END
     
-    if message_text == "📋 Мои товары":
+    if message_text == "📋 Мои ссылки":
         await show_items(update, context)
         return ConversationHandler.END
     
-    if message_text == "❌ Удалить товар":
+    if message_text == "❌ Удалить ссылку":
         if is_deadline_passed():
             await send_deadline_message(update)
             return ConversationHandler.END
@@ -232,10 +232,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             )
             return ConversationHandler.END
         
-        items_text = "❌ Какой товар удалить?\n\n"
+        items_text = "❌ Че удаляем?\n\n"
         for i, item in enumerate(added_items, 1):
             items_text += f"{i}. {item['name']} — {item['price']:.0f} ₽\n"
-        items_text += "\nНапиши номер товара:"
+        items_text += "\nНапиши номер ссылки:"
         
         await update.message.reply_text(items_text)
         return WAITING_FOR_REMOVE
@@ -251,10 +251,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             )
             return ConversationHandler.END
         
-        items_text = "✏️ Для какого товара изменить ссылку?\n\n"
+        items_text = "✏️ Для чего изменить ссылку?\n\n"
         for i, item in enumerate(added_items, 1):
             items_text += f"{i}. {item['name']} — {item['price']:.0f} ₽\n"
-        items_text += "\nНапиши номер товара:"
+        items_text += "\nНапиши номер ссылки:"
         
         await update.message.reply_text(items_text)
         return WAITING_FOR_EDIT_ITEM
@@ -265,7 +265,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     
     if not urls:
         await update.message.reply_text(
-            "🛒 Отправь мне ссылку на товар!\n\n"
+            "🛒 Отправь мне ссылку!\n\n"
             "Например:\n"
             "https://www.ozon.ru/product/...\n"
             "https://www.wildberries.ru/catalog/...",
@@ -316,11 +316,11 @@ async def handle_price(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     message_text = update.message.text.strip()
     
     # Handle menu buttons during price input
-    if message_text in ["🛒 Закинуть в корзину", "📋 Мои товары", "❌ Удалить товар", "✏️ Изменить ссылку"]:
+    if message_text in ["🛒 Закинуть в корзину", "📋 Мои ссылки", "❌ Удалить ссылку", "✏️ Изменить ссылку"]:
         context.user_data.pop('product_link', None)
-        if message_text == "📋 Мои товары":
+        if message_text == "📋 Мои ссылки":
             await show_items(update, context)
-        elif message_text == "❌ Удалить товар" or message_text == "✏️ Изменить ссылку":
+        elif message_text == "❌ Удалить ссылку" or message_text == "✏️ Изменить ссылку":
             return await handle_message(update, context)
         else:
             await update.message.reply_text("🔗 Будьте добры ссылку:", reply_markup=get_menu_keyboard())
@@ -384,12 +384,12 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     message_text = update.message.text.strip()
     
     # Handle menu buttons
-    if message_text in ["🛒 Закинуть в корзину", "📋 Мои товары", "❌ Удалить товар", "✏️ Изменить ссылку"]:
+    if message_text in ["🛒 Закинуть в корзину", "📋 Мои ссылки", "❌ Удалить ссылку", "✏️ Изменить ссылку"]:
         context.user_data.pop('product_link', None)
         context.user_data.pop('product_price', None)
-        if message_text == "📋 Мои товары":
+        if message_text == "📋 Мои ссылки":
             await show_items(update, context)
-        elif message_text == "❌ Удалить товар" or message_text == "✏️ Изменить ссылку":
+        elif message_text == "❌ Удалить ссылку" or message_text == "✏️ Изменить ссылку":
             return await handle_message(update, context)
         else:
             await update.message.reply_text("🔗 Будьте добры ссылку:", reply_markup=get_menu_keyboard())
@@ -409,7 +409,7 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
         "user_id": update.effective_user.id
     })
 
-    success_message = f"""✅ Лавэха потрачена, товар в корзине!
+    success_message = f"""✅ Лавэха потрачена, заказ в корзине!
 
 🏷 {product_name}
 💰 Цена: {price:.0f} ₽
@@ -455,8 +455,8 @@ async def handle_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     message_text = update.message.text.strip()
     
     # Handle menu buttons during remove
-    if message_text in ["🛒 Закинуть в корзину", "📋 Мои товары", "❌ Удалить товар", "✏️ Изменить ссылку"]:
-        if message_text == "📋 Мои товары":
+    if message_text in ["🛒 Закинуть в корзину", "📋 Мои ссылки", "❌ Удалить ссылку", "✏️ Изменить ссылку"]:
+        if message_text == "📋 Мои ссылки":
             await show_items(update, context)
         elif message_text == "🛒 Закинуть в корзину":
             await update.message.reply_text("🔗 Будьте добры ссылку:", reply_markup=get_menu_keyboard())
@@ -469,14 +469,14 @@ async def handle_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         item_num = int(message_text)
     except ValueError:
         await update.message.reply_text(
-            "❌ Напиши номер товара (число)!",
+            "❌ Напиши номер ссылки (число)!",
             reply_markup=get_menu_keyboard()
         )
         return ConversationHandler.END
     
     if item_num < 1 or item_num > len(added_items):
         await update.message.reply_text(
-            f"❌ Нет товара с номером {item_num}!",
+            f"❌ Нет ссылки с номером {item_num}!",
             reply_markup=get_menu_keyboard()
         )
         return ConversationHandler.END
@@ -521,8 +521,8 @@ async def handle_edit_item(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     message_text = update.message.text.strip()
     
     # Handle menu buttons
-    if message_text in ["🛒 Закинуть в корзину", "📋 Мои товары", "❌ Удалить товар", "✏️ Изменить ссылку"]:
-        if message_text == "📋 Мои товары":
+    if message_text in ["🛒 Закинуть в корзину", "📋 Мои ссылки", "❌ Удалить ссылку", "✏️ Изменить ссылку"]:
+        if message_text == "📋 Мои ссылки":
             await show_items(update, context)
         elif message_text == "🛒 Закинуть в корзину":
             await update.message.reply_text("🔗 Будьте добры ссылку:", reply_markup=get_menu_keyboard())
@@ -535,14 +535,14 @@ async def handle_edit_item(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         item_num = int(message_text)
     except ValueError:
         await update.message.reply_text(
-            "❌ Напиши номер товара (число)!",
+            "❌ Напиши номер ссылки (число)!",
             reply_markup=get_menu_keyboard()
         )
         return ConversationHandler.END
     
     if item_num < 1 or item_num > len(added_items):
         await update.message.reply_text(
-            f"❌ Нет товара с номером {item_num}!",
+            f"❌ Нет ссылки с номером {item_num}!",
             reply_markup=get_menu_keyboard()
         )
         return ConversationHandler.END
@@ -573,9 +573,9 @@ async def handle_new_link(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     message_text = update.message.text.strip()
     
     # Handle menu buttons
-    if message_text in ["🛒 Закинуть в корзину", "📋 Мои товары", "❌ Удалить товар", "✏️ Изменить ссылку"]:
+    if message_text in ["🛒 Закинуть в корзину", "📋 Мои ссылки", "❌ Удалить ссылку", "✏️ Изменить ссылку"]:
         context.user_data.pop('edit_item_index', None)
-        if message_text == "📋 Мои товары":
+        if message_text == "📋 Мои ссылки":
             await show_items(update, context)
         elif message_text == "🛒 Закинуть в корзину":
             await update.message.reply_text("🔗 Будьте добры ссылку:", reply_markup=get_menu_keyboard())
@@ -589,7 +589,7 @@ async def handle_new_link(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     
     if not urls:
         await update.message.reply_text(
-            "❌ Отправь ссылку на товар!\n\n"
+            "❌ Отправь ссылку!\n\n"
             "Например:\n"
             "https://www.ozon.ru/product/..."
         )
@@ -650,11 +650,11 @@ async def budget_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 💰 Потрачено: {current_spent:.0f} ₽
 💵 Осталось: {remaining:.0f} ₽
 🎯 Лимит: {BUDGET_LIMIT} ₽
-📦 Товаров: {len(added_items)}
+📦 Заказов: {len(added_items)}
     """
     
     if added_items:
-        status_message += "\n📋 Товары:\n"
+        status_message += "\n📋 Заказы:\n"
         for i, item in enumerate(added_items, 1):
             status_message += f"{i}. {item['name']} — {item['price']:.0f} ₽\n   👤 @{item['username']}\n   🔗 {item['link']}\n"
     
@@ -669,7 +669,7 @@ async def reset_budget(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     global current_spent, added_items
     current_spent = 0
     added_items = []
-    await update.message.reply_text("✅ Бюджет и список товаров сброшены!")
+    await update.message.reply_text("✅ Бюджет и список ссылок сброшены!")
 
 
 async def test_reminder(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
