@@ -654,7 +654,7 @@ async def budget_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if added_items:
         status_message += "\n📋 Товары:\n"
         for i, item in enumerate(added_items, 1):
-            status_message += f"{i}. {item['name']} — {item['price']:.0f} ₽\n"
+            status_message += f"{i}. {item['name']} — {item['price']:.0f} ₽\n   🔗 {item['link']}\n"
     
     await update.message.reply_text(status_message)
 
