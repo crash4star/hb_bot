@@ -404,7 +404,9 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     added_items.append({
         "link": product_link,
         "price": price,
-        "name": product_name
+        "name": product_name,
+        "username": update.effective_user.username or f"User_{update.effective_user.id}",
+        "user_id": update.effective_user.id
     })
 
     success_message = f"""✅ Лавэха потрачена, товар в корзине!
@@ -654,7 +656,7 @@ async def budget_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if added_items:
         status_message += "\n📋 Товары:\n"
         for i, item in enumerate(added_items, 1):
-            status_message += f"{i}. {item['name']} — {item['price']:.0f} ₽\n   🔗 {item['link']}\n"
+            status_message += f"{i}. {item['name']} — {item['price']:.0f} ₽\n   👤 @{item['username']}\n   🔗 {item['link']}\n"
     
     await update.message.reply_text(status_message)
 
