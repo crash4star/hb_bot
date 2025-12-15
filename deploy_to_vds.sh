@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Birthday Bot Deployment Script for Clean VDS
-# Run this script on your VDS server after uploading all files
+# Run this script on your VDS server
 
 echo "🚀 Starting Birthday Bot Deployment..."
 
@@ -10,13 +10,27 @@ echo "📦 Updating system packages..."
 sudo apt update && sudo apt upgrade -y
 
 # Install required packages
-echo "🐍 Installing Python and dependencies..."
-sudo apt install python3 python3-pip python3-venv screen -y
+echo "🐍 Installing Python, Git and dependencies..."
+sudo apt install python3 python3-pip python3-venv git screen -y
 
-# Create bot directory
-echo "📁 Setting up bot directory..."
+# Create bot directory and clone from GitHub
+echo "📁 Cloning bot from GitHub..."
 mkdir -p ~/birthday_bot
 cd ~/birthday_bot
+
+# Clone your repository (replace with your GitHub repo URL)
+echo "🔗 Enter your GitHub repository URL:"
+echo "   Example: https://github.com/yourusername/birthday-bot.git"
+echo "   Or: git@github.com:yourusername/birthday-bot.git"
+echo ""
+echo "⚠️  IMPORTANT: Clone your repository first!"
+echo "   git clone YOUR_REPO_URL ."
+echo ""
+echo "Press Enter when ready to continue..."
+read
+
+# Alternative: uncomment and edit the line below with your repo URL
+# git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git .
 
 # Create virtual environment
 echo "🌐 Creating virtual environment..."
