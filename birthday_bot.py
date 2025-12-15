@@ -192,7 +192,7 @@ async def show_items(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     
     items_text = "📋 **Че я там накидала в корзину:**\n\n"
     for i, item in enumerate(added_items, 1):
-        items_text += f"{i}. {item['name']} — {item['price']:.0f} ₽\n"
+        items_text += f"{i}. {item['name']} — {item['price']:.0f} ₽\n   🔗 {item['link']}\n"
     
     await update.message.reply_text(items_text, reply_markup=get_menu_keyboard(), parse_mode='Markdown')
 
