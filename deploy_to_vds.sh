@@ -62,6 +62,13 @@ chmod +x start_bot.sh
 
 # Create systemd service
 echo "🔧 Creating systemd service..."
+# Handle root user correctly
+if [ "$USER" = "root" ]; then
+    HOME_DIR="/root"
+else
+    HOME_DIR="/home/$USER"
+fi
+
 sudo tee /etc/systemd/system/birthdaybot.service > /dev/null << EOF
 [Unit]
 Description=Birthday Bot
@@ -70,8 +77,8 @@ After=network.target
 [Service]
 Type=simple
 User=$USER
-WorkingDirectory=/home/$USER/birthday_bot
-ExecStart=/home/$USER/birthday_bot/start_bot.sh
+WorkingDirectory=$HOME_DIR/birthday_bot
+ExecStart=$HOME_DIR/birthday_bot/start_bot.sh
 Restart=always
 RestartSec=10
 
